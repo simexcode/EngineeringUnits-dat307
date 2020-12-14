@@ -5,7 +5,8 @@ namespace UnitConverter {
         static void Main(string[] args) {
             Converter converter = new Converter();
             converter.Read();
-            Console.WriteLine("Hello World!");
+            var result = converter.Convert(100, "cm", "km");
+            Console.WriteLine("GOT: " + result);
         }
     }
 }
