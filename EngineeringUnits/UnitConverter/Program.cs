@@ -12,7 +12,7 @@ namespace UnitConverter {
             }
 
             try {
-                var result = converter.Convert(100, "cm", "km");
+                var result = converter.Convert(983, "degC", "degF");
                 Console.WriteLine("GOT: " + result);
             }
             catch (Exception e) {
