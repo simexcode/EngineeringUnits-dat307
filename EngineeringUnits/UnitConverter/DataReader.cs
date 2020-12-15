@@ -20,43 +20,7 @@ namespace UnitConverter {
                 units.Add(CreateUnitFromXMl(nodes.Item(i).OuterXml));
             }
 
-
-                /* for (int i = 0; i < nodes.Count; i++) {
-                     var item = nodes.Item(i).ChildNodes;
-                     string Name = "";
-                     string UnitName = nodes.Item(i).Attributes.GetNamedItem("id").Value;
-                     string baseUnit = "";
-                     string Symbol = nodes.Item(i).Attributes.GetNamedItem("annotation").Value;
-                     Func<double, double> ToBase = (value) => { return value * 1; };
-                     Func<double, double> FromBase = (value) => { return value * 1; };
-
-                     for (int j = 0; j < item.Count; j++) {
-                         var node = item.Item(j);
-
-                         if (node.Name == "Name") Name = node.InnerText;
-
-
-                         if (node.Name == "ConversionToBaseUnit") {
-                             baseUnit = node.Attributes.GetNamedItem("baseUnit").InnerText;
-                             if (node.ChildNodes.Item(0).Name == "Factor") {
-                                 var fac = double.Parse(node.ChildNodes.Item(0).InnerText);
-                                 ToBase = (value) => { return value * fac; };
-                                 FromBase = (value) => { return value / fac; };
-                             }
-                             else {
-                                 var num = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(0).InnerText);
-                                 var den = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(1).InnerText);
-                                 ToBase = (value) => { return value * (num / den); };
-                                 FromBase = (value) => { return value / (num / den); };
-                             }
-                         }
-                     }
-
-                     Unit unit = new Unit(Name, UnitName, Symbol, baseUnit, ToBase, FromBase);
-                     units.Add(unit);
-                 }*/
-
-                return units;
+            return units;
         }
 
         public List<Dimension> GetDimensions() {
@@ -108,8 +72,19 @@ namespace UnitConverter {
         }
 
         public List<Unit> GetUnitsInDimmention(Dimension dimension) {
-            return null;
-        
+            List<Unit> units = new List<Unit>();
+            var nodes = xmlDocument.GetElementsByTagName("UnitOfMeasure");
+
+
+            foreach (XmlNode node in nodes) {
+                if (node.ChildNodes.Cast<XmlNode>().Where((n) => { n.Name == "DimensionalClass" && n.InnerText.ToLower() == dimension.Name.ToLower(); });
+            }
+
+            for (int i = 0; i < nodes.Count; i++) {
+                units.Add(CreateUnitFromXMl(nodes.Item(i).OuterXml));
+            }
+
+            return units;
         }
 
         private Unit CreateUnitFromXMl(string xml) {
@@ -147,6 +122,9 @@ namespace UnitConverter {
                     }
                 }
             }
+
+            if (baseUnit == "")
+                baseUnit = UnitName;
 
             return new Unit(Name, UnitName, Symbol, baseUnit, ToBase, FromBase);
         }
