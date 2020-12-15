@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <Reference Include="UnitConverter">
-      <HintPath>dependencies\UnitConverter.dll</HintPath>
+      <HintPath>..\UnitConverter\bin\Debug\netcoreapp3.1\UnitConverter.dll</HintPath>
     </Reference>
   </ItemGroup>
 
