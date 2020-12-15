@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace UnitConverter {
-    class Dimension : IHashable {
+    class Dimension {
         public string Name;
-        int HashName;
-        string IHashable.Name { get => Name; }
-        int IHashable.HashName { get => HashName; }
 
-        //public static implicit operator Dimension(string d) => d;
-        //public static implicit operator string(Dimension d) => d.Name;
+        public Dimension(string name) {
+            Name = name;
+        }
+
+
+        public static implicit operator Dimension(string d) => new Dimension(d);
+        public static implicit operator string(Dimension d) => d.Name;
     }
 }

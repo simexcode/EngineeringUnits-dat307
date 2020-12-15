@@ -77,11 +77,9 @@ namespace UnitConverter {
 
 
             foreach (XmlNode node in nodes) {
-                if (node.ChildNodes.Cast<XmlNode>().Where((n) => { n.Name == "DimensionalClass" && n.InnerText.ToLower() == dimension.Name.ToLower(); });
-            }
-
-            for (int i = 0; i < nodes.Count; i++) {
-                units.Add(CreateUnitFromXMl(nodes.Item(i).OuterXml));
+                if (node.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "DimensionalClass" && n.InnerText.ToLower() == dimension.Name.ToLower()) != null){
+                    units.Add(CreateUnitFromXMl(node.OuterXml));
+                }
             }
 
             return units;

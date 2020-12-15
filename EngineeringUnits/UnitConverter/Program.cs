@@ -5,6 +5,12 @@ namespace UnitConverter {
         static void Main(string[] args) {
             Converter converter = new Converter();
             converter.Read();
+
+            var units = converter.GetUnitsInDimension("Length");
+            foreach (var unit in units) {
+                Console.WriteLine(unit.Name);
+            }
+
             try {
                 var result = converter.Convert(100, "cm", "km");
                 Console.WriteLine("GOT: " + result);

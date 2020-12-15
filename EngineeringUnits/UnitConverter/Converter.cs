@@ -42,7 +42,7 @@ namespace UnitConverter {
 
         public List<QuantityType> GetQuantityTypes() { throw new NotImplementedException(); }
 
-        public List<Unit> GetUnitsInDimension(Dimension dimension) { throw new NotImplementedException(); }
+        public List<Unit> GetUnitsInDimension(Dimension dimension) {return new List<Unit>(); }
 
         public List<Unit> GetUnitsInQuantity(QuantityType quantityType) { throw new NotImplementedException(); }
     }
