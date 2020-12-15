@@ -5,15 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UnitConverter;
+using System.Text.Json;
 
 namespace ConverterWebAPI.Controllers {
 
     [ApiController]
     [Route("[controller]")]
-    public class ConverterController : ControllerBase {
+    public class QuantityTypeController : ControllerBase {
         private readonly Converter converter;
 
-        public ConverterController() {
+        public QuantityTypeController() {
             this.converter = new Converter();
         }
 
@@ -26,6 +27,22 @@ namespace ConverterWebAPI.Controllers {
             [Required] public double data { get; set; }
             [Required] public string from { get; set; }
             [Required] public string to { get; set; }
+        }
+
+        [HttpGet]
+        public string Start() {
+            List<string> list = new List<string>();
+            var File = converter.GetQuantityTypes();
+
+            for (int i = 0; i < File.Count; i++)
+            {
+                // for (int j = 0; j < File[i].Name.Length; j++)
+                // {
+                    // list.Add(File[i].descriptors[j]);
+                    System.Console.WriteLine(File[i].Name);
+                // }
+            }
+            return JsonSerializer.Serialize(list);
         }
 
         [HttpPost]
