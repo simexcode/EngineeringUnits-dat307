@@ -6,7 +6,8 @@ namespace UnitConverter {
             Converter converter = new Converter();
             converter.Read();
 
-            var units = converter.GetUnitsInDimension("Length");
+            //var units = converter.GetUnitsInDimension("Length");
+            var units = converter.GetUnitsInQuantity("temperature per time");
             foreach (var unit in units) {
                 Console.WriteLine(unit.Name);
             }

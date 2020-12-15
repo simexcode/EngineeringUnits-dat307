@@ -42,10 +42,20 @@ namespace UnitConverter {
 
         public List<QuantityType> GetQuantityTypes() { throw new NotImplementedException(); }
 
-        public List<Unit> GetUnitsInDimension(string dimension) { return reader.GetUnitsInDimmention(dimension); }
+        public List<Unit> GetUnitsInDimension(string dimension) {
+            var classes = reader.GetDimensions();
+            var dim = classes.FirstOrDefault(d => d.descriptors.Contains(dimension.ToLower()));
+            return GetUnitsInDimension(dim);
+        }
 
         public List<Unit> GetUnitsInDimension(Dimension dimension) {return reader.GetUnitsInDimmention(dimension); }
 
-        public List<Unit> GetUnitsInQuantity(QuantityType quantityType) { throw new NotImplementedException(); }
+        public List<Unit> GetUnitsInQuantity(string quantity) {
+            var classes = reader.GetQuantityTypes();
+            var dim = classes.FirstOrDefault(d => d.Name.ToLower() == quantity.ToLower());
+            return GetUnitsInQuantity(dim);
+        }
+
+        public List<Unit> GetUnitsInQuantity(QuantityType quantityType) { return reader.GetUnitsInQuantity(quantityType); }
     }
 }

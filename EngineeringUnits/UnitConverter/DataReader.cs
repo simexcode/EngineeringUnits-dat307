@@ -25,10 +25,12 @@ namespace UnitConverter {
 
         public List<Dimension> GetDimensions() {
             List<Dimension> dimensions = new List<Dimension>();
+            
             var nodes = xmlDocument.GetElementsByTagName("UnitOfMeasure");
 
             foreach (XmlNode node in nodes) {
                 var subNodes = node.ChildNodes;
+                var descriptors = new List<string>();
                 var dimention = ""; var quantity = ""; var isBaseUnit = true;
 
                 foreach (XmlNode subNode in subNodes) {
@@ -38,15 +40,15 @@ namespace UnitConverter {
                     if (subNode.Name == "DimensionalClass")
                         dimention = subNode.InnerText;
 
-                    if (subNode.Name == "QuantityType")
-                        quantity = subNode.InnerText;
+                    if (subNode.Name == "QuantityType") {
+                        descriptors.Add(subNode.InnerText.ToLower());
+                    }
                 }
 
                 if (isBaseUnit == false)
                     continue;
 
-                //Console.WriteLine(quantity + ", " + dimention);
-                dimensions.Add(new Dimension(quantity, dimention)); ;
+                dimensions.Add(new Dimension(descriptors.ToArray(), dimention)); ;
             }
 
             return dimensions;
@@ -72,11 +74,7 @@ namespace UnitConverter {
             return qTypes;
         }
 
-        public List<Unit> GetUnitsInDimmention(string dimension) {
-            var classes = GetDimensions();
-            var dim = classes.FirstOrDefault(d => d.Name.ToLower() == dimension.ToLower());
-            return GetUnitsInDimmention(dim);
-        }
+
 
         public List<Unit> GetUnitsInDimmention(Dimension dimension) {
             List<Unit> units = new List<Unit>();
@@ -84,6 +82,19 @@ namespace UnitConverter {
 
             foreach (XmlNode node in nodes) {
                 if (node.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Name == "DimensionalClass" && n.InnerText == dimension.dimension) != null){
+                    units.Add(CreateUnitFromXMl(node.OuterXml));
+                }
+            }
+
+            return units;
+        }
+
+        public List<Unit> GetUnitsInQuantity(QuantityType qType) {
+            List<Unit> units = new List<Unit>();
+            var nodes = xmlDocument.GetElementsByTagName("UnitOfMeasure");
+
+            foreach (XmlNode node in nodes) {
+                if (node.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Name == "QuantityType" && n.InnerText == qType.Name) != null) {
                     units.Add(CreateUnitFromXMl(node.OuterXml));
                 }
             }
