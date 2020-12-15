@@ -13,8 +13,8 @@ namespace UnitConverter {
             }
 
             try {
-                var result = converter.Convert(983, "degC", "degF");
-                Console.WriteLine("GOT: " + result);
+                var result = converter.Convert(983, "cm", "m");
+                Console.WriteLine("GOT: " + result.Item1 + " " + result.Item2);
             }
             catch (Exception e) {
                 Console.WriteLine("ERROR: " + e.Message);

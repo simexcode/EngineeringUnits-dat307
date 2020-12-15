@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace UnitConverter {
-    class Unit : IHashable {
+    public class Unit : IHashable {
         public string Name;
         public string UnitName;
         public int HashName;

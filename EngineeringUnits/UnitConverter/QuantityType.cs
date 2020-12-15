@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace UnitConverter {
-    class QuantityType {
+    public class QuantityType {
         public readonly string Name;
         
         public QuantityType(string name) {

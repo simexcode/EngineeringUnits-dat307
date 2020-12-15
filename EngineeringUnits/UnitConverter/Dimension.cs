@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace UnitConverter {
-    class Dimension {
+    public class Dimension {
         public readonly string[] descriptors;
         public readonly string dimension;
 
