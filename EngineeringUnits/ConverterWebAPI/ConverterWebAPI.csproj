@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UnitConverter\UnitConverter.csproj" />
+    <Reference Include="UnitConverter">
+      <HintPath>dependencies\UnitConverter.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 
