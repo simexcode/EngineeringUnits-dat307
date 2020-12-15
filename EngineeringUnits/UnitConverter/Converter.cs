@@ -7,20 +7,17 @@ namespace UnitConverter {
     public class Converter {
 
         DataReader reader;
-        List<Unit> units = new List<Unit>();
+        //List<Unit> units = new List<Unit>();
         Dictionary<string, List<Unit>> cache = new Dictionary<string, List<Unit>>();
         Queue<string> cacheQueue = new Queue<string>();  
-        int cacheLevel = 0;
+        int cacheLevel = 1;
 
-        public Converter() {
-            Read();
-        }
-
-        public void Read() {
+        public Converter(int cacheLevel = 1) {
+            //Read();
+            this.cacheLevel = cacheLevel;
             reader = new DataReader();
-            reader.load();
-            units = reader.GetUnits();
         }
+
 
         private bool UnitInCache(string name, ref List<Unit> hit) {
 
@@ -40,17 +37,26 @@ namespace UnitConverter {
             if (UnitInCache(name, ref hit))
                 return hit;
 
+            if (cacheQueue.Count == cacheLevel) {
+                var last = cacheQueue.Dequeue();
+                cache[last].Clear();
+            }
+
             var all = reader.GetUnits();
             var candidate = all.FirstOrDefault(n => { return n.UnitName == name || n.Name.ToLower() == name.ToLower() || n.symbol == name; });
 
+            if (candidate == null)
+                throw new KeyNotFoundException("Could not find any unit '" + name + "'");
+
             var filtered = all.Where(n => n.baseUnit == candidate.baseUnit).ToList();
-            cache.Add(candidate.baseUnit, filtered);
+            cache[candidate.dimention] = filtered;
+            cacheQueue.Enqueue(candidate.dimention);
             return filtered;
         }
 
         public (double, string) Convert(double d, String f, String t) {
-            Unit from = units.FirstOrDefault(n => { return n.UnitName == f || n.Name.ToLower() == f.ToLower() || n.symbol == f; });
-            Unit to = units.FirstOrDefault(n => { return n.UnitName == t || n.Name.ToLower() == t.ToLower() || n.symbol == t; });
+            Unit from = LoadUnit(f).FirstOrDefault(n => { return n.UnitName == f || n.Name.ToLower() == f.ToLower() || n.symbol == f; });
+            Unit to = LoadUnit(t).FirstOrDefault(n => { return n.UnitName == t || n.Name.ToLower() == t.ToLower() || n.symbol == t; });
 
             if (from == null)
                 throw new KeyNotFoundException("No unit of type '" + f + "' was found");

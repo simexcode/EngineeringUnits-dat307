@@ -8,10 +8,11 @@ namespace UnitConverter {
     class DataReader {
         XmlDocument xmlDocument = new XmlDocument();
 
-        public void load() {
+        public DataReader() {
             String foo = Properties.Resources.units;
             xmlDocument.LoadXml(foo);
         }
+
 
         public List<Unit> GetUnits() {
             List<Unit> units = new List<Unit>();
@@ -112,6 +113,7 @@ namespace UnitConverter {
             string Name = "";
             string UnitName = element.Attributes.GetNamedItem("id").Value;
             string baseUnit = "";
+            string dim = "";
             string Symbol = element.Attributes.GetNamedItem("annotation").Value;
             Func<double, double> ToBase = (value) => { return value * 1; };
             Func<double, double> FromBase = (value) => { return value * 1; };
@@ -121,6 +123,7 @@ namespace UnitConverter {
 
                 if (node.Name == "Name") Name = node.InnerText;
 
+                if (node.Name == "DimensionalClass") dim = node.InnerText;
 
                if (node.Name == "ConversionToBaseUnit") {
                     baseUnit = node.Attributes.GetNamedItem("baseUnit").InnerText;
@@ -149,7 +152,7 @@ namespace UnitConverter {
             if (baseUnit == "")
                 baseUnit = UnitName;
 
-            return new Unit(Name, UnitName, Symbol, baseUnit, ToBase, FromBase);
+            return new Unit(Name, UnitName, Symbol, baseUnit, dim, ToBase, FromBase);
         }
     }
 }
