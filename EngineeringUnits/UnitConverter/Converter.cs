@@ -8,6 +8,9 @@ namespace UnitConverter {
 
         DataReader reader;
         List<Unit> units = new List<Unit>();
+        Dictionary<string, List<Unit>> cache = new Dictionary<string, List<Unit>>();
+        Queue<string> cacheQueue = new Queue<string>();  
+        int cacheLevel = 0;
 
         public Converter() {
             Read();
@@ -17,6 +20,32 @@ namespace UnitConverter {
             reader = new DataReader();
             reader.load();
             units = reader.GetUnits();
+        }
+
+        private bool UnitInCache(string name, ref List<Unit> hit) {
+
+            foreach (var key in cache.Keys) {
+                var candidate = cache[key].FirstOrDefault(n => { return n.UnitName == name || n.Name.ToLower() == name.ToLower() || n.symbol == name; });
+                if (candidate != null) {
+                    hit = cache[key];
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private List<Unit> LoadUnit(string name) {
+            List<Unit> hit = new List<Unit>();
+            if (UnitInCache(name, ref hit))
+                return hit;
+
+            var all = reader.GetUnits();
+            var candidate = all.FirstOrDefault(n => { return n.UnitName == name || n.Name.ToLower() == name.ToLower() || n.symbol == name; });
+
+            var filtered = all.Where(n => n.baseUnit == candidate.baseUnit).ToList();
+            cache.Add(candidate.baseUnit, filtered);
+            return filtered;
         }
 
         public (double, string) Convert(double d, String f, String t) {
@@ -44,7 +73,7 @@ namespace UnitConverter {
             return reader.GetDimensions();
         }
 
-        public List<QuantityType> GetQuantityTypes() { throw new NotImplementedException(); }
+        public List<QuantityType> GetQuantityTypes() { return reader.GetQuantityTypes(); }
 
         public List<Unit> GetUnitsInDimension(string dimension) {
             var classes = reader.GetDimensions();
