@@ -45,7 +45,8 @@ namespace UnitConverter {
                 if (isBaseUnit == false)
                     continue;
 
-                Console.WriteLine(quantity + ", " + dimention);
+                //Console.WriteLine(quantity + ", " + dimention);
+                dimensions.Add(new Dimension(quantity, dimention)); ;
             }
 
             return dimensions;
@@ -71,13 +72,18 @@ namespace UnitConverter {
             return qTypes;
         }
 
+        public List<Unit> GetUnitsInDimmention(string dimension) {
+            var classes = GetDimensions();
+            var dim = classes.FirstOrDefault(d => d.Name.ToLower() == dimension.ToLower());
+            return GetUnitsInDimmention(dim);
+        }
+
         public List<Unit> GetUnitsInDimmention(Dimension dimension) {
             List<Unit> units = new List<Unit>();
             var nodes = xmlDocument.GetElementsByTagName("UnitOfMeasure");
 
-
             foreach (XmlNode node in nodes) {
-                if (node.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "DimensionalClass" && n.InnerText.ToLower() == dimension.Name.ToLower()) != null){
+                if (node.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Name == "DimensionalClass" && n.InnerText == dimension.dimension) != null){
                     units.Add(CreateUnitFromXMl(node.OuterXml));
                 }
             }

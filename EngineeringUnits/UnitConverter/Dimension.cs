@@ -4,14 +4,12 @@ using System.Text;
 
 namespace UnitConverter {
     class Dimension {
-        public string Name;
+        public readonly string Name;
+        public readonly string dimension;
 
-        public Dimension(string name) {
+        public Dimension(string name, string dimension) {
             Name = name;
+            this.dimension = dimension;
         }
-
-
-        public static implicit operator Dimension(string d) => new Dimension(d);
-        public static implicit operator string(Dimension d) => d.Name;
     }
 }
