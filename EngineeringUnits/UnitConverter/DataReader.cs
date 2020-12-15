@@ -111,18 +111,26 @@ namespace UnitConverter {
                 if (node.Name == "Name") Name = node.InnerText;
 
 
-                if (node.Name == "ConversionToBaseUnit") {
+               if (node.Name == "ConversionToBaseUnit") {
                     baseUnit = node.Attributes.GetNamedItem("baseUnit").InnerText;
                     if (node.ChildNodes.Item(0).Name == "Factor") {
                         var fac = double.Parse(node.ChildNodes.Item(0).InnerText);
                         ToBase = (value) => { return value * fac; };
                         FromBase = (value) => { return value / fac; };
                     }
-                    else {
+                    else if(node.ChildNodes.Item(0).Name == "Fraction") {
                         var num = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(0).InnerText);
                         var den = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(1).InnerText);
                         ToBase = (value) => { return value * (num / den); };
                         FromBase = (value) => { return value / (num / den); };
+                    }
+                    else if(node.ChildNodes.Item(0).Name == "Formula"){
+                        var A = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(0).InnerText);
+                        var B = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(1).InnerText);
+                        var C = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(2).InnerText);
+                        var D = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(3).InnerText);
+                        ToBase = (value) => {return (A + B * value)/(C + D* value); };
+                        FromBase = (value) => {return (A- C * value)/(D * value - B);};    
                     }
                 }
             }
