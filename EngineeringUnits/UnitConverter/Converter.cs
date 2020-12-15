@@ -16,26 +16,29 @@ namespace UnitConverter {
         }
 
         public double Convert(double d, String f, String t) {
-            Unit from = units.First(n => { return n.UnitName == f || n.Name.ToLower() == f.ToLower() || n.symbol == f; });
-            Unit to = units.First(n => { return n.UnitName == t || n.Name.ToLower() == t.ToLower() || n.symbol == t; });
+            Unit from = units.FirstOrDefault(n => { return n.UnitName == f || n.Name.ToLower() == f.ToLower() || n.symbol == f; });
+            Unit to = units.FirstOrDefault(n => { return n.UnitName == t || n.Name.ToLower() == t.ToLower() || n.symbol == t; });
 
-            foreach (var unit in units) {
-                if (unit.UnitName == t)
-                    to = unit;
+            if (from == null)
+                throw new KeyNotFoundException("No unit of type '" + f + "' was found");
 
-                if (unit.UnitName == f)
-                    from = unit;
-            }
+            if (to == null)
+                throw new KeyNotFoundException("No unit of type '" + t + "' was found");
+
+            if (to.baseUnit != from.baseUnit)
+                throw new InvalidOperationException("Cannot convert from type '" + from.Name + "' to type '" + to.Name + "', no common base unit found");
 
             return Convert(d, from, to);
         }
 
-        public double Convert(double d, Unit f, Unit t) {
+        private double Convert(double d, Unit f, Unit t) {
             var temp = f.ToBase(d);
             return t.FromBase(temp);
         }
 
-        public List<Dimension> GetDimensionClasses() { throw new NotImplementedException(); }
+        public List<Dimension> GetDimensionClasses() {
+            return reader.GetDimensions();
+        }
 
         public List<QuantityType> GetQuantityTypes() { throw new NotImplementedException(); }
 

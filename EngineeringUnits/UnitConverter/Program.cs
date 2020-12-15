@@ -5,8 +5,13 @@ namespace UnitConverter {
         static void Main(string[] args) {
             Converter converter = new Converter();
             converter.Read();
-            var result = converter.Convert(100, "cm", "km");
-            Console.WriteLine("GOT: " + result);
+            try {
+                var result = converter.Convert(100, "cm", "km");
+                Console.WriteLine("GOT: " + result);
+            }
+            catch (Exception e) {
+                Console.WriteLine("ERROR: " + e.Message);
+            }           
         }
     }
 }

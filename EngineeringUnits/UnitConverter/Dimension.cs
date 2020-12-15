@@ -8,5 +8,8 @@ namespace UnitConverter {
         int HashName;
         string IHashable.Name { get => Name; }
         int IHashable.HashName { get => HashName; }
+
+        public static implicit operator Dimension(string d) => d;
+        public static implicit operator string(Dimension d) => d.Name;
     }
 }

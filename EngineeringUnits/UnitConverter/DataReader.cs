@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
@@ -16,41 +17,46 @@ namespace UnitConverter {
             List<Unit> units = new List<Unit>();
             var nodes = xmlDocument.GetElementsByTagName("UnitOfMeasure");
             for (int i = 0; i < nodes.Count; i++) {
-                var item = nodes.Item(i).ChildNodes;
-                string Name = "";
-                string UnitName = nodes.Item(i).Attributes.GetNamedItem("id").Value;
-                string baseUnit = "";
-                string Symbol = nodes.Item(i).Attributes.GetNamedItem("annotation").Value;
-                Func<double, double> ToBase = (value) => { return value * 1; };
-                Func<double, double> FromBase = (value) => { return value * 1; };
-
-                for (int j = 0; j < item.Count; j++) {
-                    var node = item.Item(j);
-
-                    if (node.Name == "Name") Name = node.InnerText;
-
-
-                    if (node.Name == "ConversionToBaseUnit") {
-                        baseUnit = node.Attributes.GetNamedItem("baseUnit").InnerText;
-                        if (node.ChildNodes.Item(0).Name == "Factor") {
-                            var fac = double.Parse(node.ChildNodes.Item(0).InnerText);
-                            ToBase = (value) => { return value * fac; };
-                            FromBase = (value) => { return value / fac; };
-                        }
-                        else {
-                            var num = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(0).InnerText);
-                            var den = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(1).InnerText);
-                            ToBase = (value) => { return value * (num / den); };
-                            FromBase = (value) => { return value / (num / den); };
-                        }
-                    }
-                }
-
-                Unit unit = new Unit(Name, UnitName, Symbol, baseUnit, ToBase, FromBase);
-                units.Add(unit);
+                units.Add(CreateUnitFromXMl(nodes.Item(i).OuterXml));
             }
 
-            return units;
+
+                /* for (int i = 0; i < nodes.Count; i++) {
+                     var item = nodes.Item(i).ChildNodes;
+                     string Name = "";
+                     string UnitName = nodes.Item(i).Attributes.GetNamedItem("id").Value;
+                     string baseUnit = "";
+                     string Symbol = nodes.Item(i).Attributes.GetNamedItem("annotation").Value;
+                     Func<double, double> ToBase = (value) => { return value * 1; };
+                     Func<double, double> FromBase = (value) => { return value * 1; };
+
+                     for (int j = 0; j < item.Count; j++) {
+                         var node = item.Item(j);
+
+                         if (node.Name == "Name") Name = node.InnerText;
+
+
+                         if (node.Name == "ConversionToBaseUnit") {
+                             baseUnit = node.Attributes.GetNamedItem("baseUnit").InnerText;
+                             if (node.ChildNodes.Item(0).Name == "Factor") {
+                                 var fac = double.Parse(node.ChildNodes.Item(0).InnerText);
+                                 ToBase = (value) => { return value * fac; };
+                                 FromBase = (value) => { return value / fac; };
+                             }
+                             else {
+                                 var num = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(0).InnerText);
+                                 var den = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(1).InnerText);
+                                 ToBase = (value) => { return value * (num / den); };
+                                 FromBase = (value) => { return value / (num / den); };
+                             }
+                         }
+                     }
+
+                     Unit unit = new Unit(Name, UnitName, Symbol, baseUnit, ToBase, FromBase);
+                     units.Add(unit);
+                 }*/
+
+                return units;
         }
 
         public List<Dimension> GetDimensions() {
@@ -81,25 +87,68 @@ namespace UnitConverter {
             return dimensions;
         }
 
-        public void GetDimensionalClass(string QTypeID) {
-            XmlDocument Units = new XmlDocument();
-            Units.Load("poscUnits22.xml");
-            XmlNodeList nodeList = Units.GetElementsByTagName("UnitOfMeasure");
+        public List<QuantityType> GetQuantityTypes() {
+            List<QuantityType> qTypes = new List<QuantityType>();
 
-            // Foreach loop gets the dimensionclass of the input unit
-            // Need to make a list of the nodes with same base unit.
-            foreach (XmlNode node in nodeList) {
-                if (node.Attributes[0].Value == QTypeID) {
+            var nodes = xmlDocument.GetElementsByTagName("UnitOfMeasure");
 
-                    //Iterates through the childnodes in the main node.
-                    for (int i = 0; i < node.ChildNodes.Count; i++) {
-                        //Finds the node with correct tag
-                        if (node.ChildNodes[i].Name == "DimensionalClass") {
-                            Console.WriteLine(node.ChildNodes[i].InnerText);
+            foreach (XmlNode node in nodes) {
+                var subNodes = node.ChildNodes;
+
+                foreach (XmlNode subNode in subNodes) {
+                    if (subNode.Name == "QuantityType") {
+                        if (qTypes.FirstOrDefault(n => n.Name == subNode.InnerText) == null) {
+                            qTypes.Add(new QuantityType(subNode.InnerText));
                         }
                     }
                 }
             }
+
+            return qTypes;
+        }
+
+        public List<Unit> GetUnitsInDimmention(Dimension dimension) {
+            return null;
+        
+        }
+
+        private Unit CreateUnitFromXMl(string xml) {
+            XmlDocument xmlUnit = new XmlDocument();
+            xmlUnit.LoadXml(xml);
+            //var nodes = xmlDocument.GetElementsByTagName("UnitOfMeasure");
+            var element = xmlUnit.GetElementsByTagName("UnitOfMeasure").Item(0);
+
+            var item = element.ChildNodes;
+            string Name = "";
+            string UnitName = element.Attributes.GetNamedItem("id").Value;
+            string baseUnit = "";
+            string Symbol = element.Attributes.GetNamedItem("annotation").Value;
+            Func<double, double> ToBase = (value) => { return value * 1; };
+            Func<double, double> FromBase = (value) => { return value * 1; };
+
+            for (int j = 0; j < item.Count; j++) {
+                var node = item.Item(j);
+
+                if (node.Name == "Name") Name = node.InnerText;
+
+
+                if (node.Name == "ConversionToBaseUnit") {
+                    baseUnit = node.Attributes.GetNamedItem("baseUnit").InnerText;
+                    if (node.ChildNodes.Item(0).Name == "Factor") {
+                        var fac = double.Parse(node.ChildNodes.Item(0).InnerText);
+                        ToBase = (value) => { return value * fac; };
+                        FromBase = (value) => { return value / fac; };
+                    }
+                    else {
+                        var num = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(0).InnerText);
+                        var den = double.Parse(node.ChildNodes.Item(0).ChildNodes.Item(1).InnerText);
+                        ToBase = (value) => { return value * (num / den); };
+                        FromBase = (value) => { return value / (num / den); };
+                    }
+                }
+            }
+
+            return new Unit(Name, UnitName, Symbol, baseUnit, ToBase, FromBase);
         }
     }
 }
