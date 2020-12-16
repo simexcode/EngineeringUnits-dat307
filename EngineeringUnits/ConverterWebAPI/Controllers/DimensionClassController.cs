@@ -22,12 +22,24 @@ namespace ConverterWebAPI.Controllers {
             [Required] public string dimension { get; set; }
         }
 
+        public class Jsonn { 
+            public string desciptions { get; set; }
+            public string dimension { get; set; }
+        }
+
         [HttpGet]
         public string Start() {
-            List<string> list = new List<string>();
+            List<Jsonn> list = new List<Jsonn>();
             var File = converter.GetDimensionClasses();
             for (int i = 0; i < File.Count; i++){
-                list.Add(File[i].descriptors[0]+" : "+File[i].dimension);
+                var jsonn = new Jsonn
+                {
+                    desciptions = File[i].descriptors[0],
+                    dimension = File[i].dimension
+                };
+                list.Add(jsonn);
+
+                // list.Add(File[i].descriptors[0] + " : " + File[i].dimension);
             }
             return JsonSerializer.Serialize(list);
         }

@@ -22,19 +22,46 @@ namespace ConverterWebAPI.Controllers {
             [Required] public string dimension { get; set; }
         }
 
+        public class Jsonn { 
+            public string desciptions { get; set; }
+            public string dimension { get; set; }
+        }
+
         [HttpGet]
         public string Start() {
-            List<string> list = new List<string>();
+            List<Jsonn> list = new List<Jsonn>();
             var File = converter.GetQuantityTypes();
             for (int i = 0; i < File.Count; i++){
-                List<string> list2 = new List<string>();
                 var unit = converter.GetUnitsInQuantity(File[i].Name);
+
                  for (int j = 0; j < unit.Count; j++){
-                     list.Add(File[i].Name+" : "+unit[j].symbol);
+                    var jsonn = new Jsonn
+                    {
+                        desciptions = File[i].Name,
+                        dimension = unit[j].symbol
+                    };
+                    list.Add(jsonn);
                  }
+
+                
+
+                // list.Add(File[i].descriptors[0] + " : " + File[i].dimension);
             }
             return JsonSerializer.Serialize(list);
         }
+
+        // public string Start() {
+            // List<string> list = new List<string>();
+            // var File = converter.GetQuantityTypes();
+            // for (int i = 0; i < File.Count; i++){
+                // List<string> list2 = new List<string>();
+                // var unit = converter.GetUnitsInQuantity(File[i].Name);
+                //  for (int j = 0; j < unit.Count; j++){
+                //      list.Add(File[i].Name+" : "+unit[j].symbol);
+                //  }
+            // }
+            // return JsonSerializer.Serialize(list);
+        // }
 
         [HttpPost]
         public string Post(Input input) {
