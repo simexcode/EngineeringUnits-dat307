@@ -30,6 +30,10 @@ namespace ConverterWebAPI {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/error");
+            }
 
             app.UseHttpsRedirection();
 
