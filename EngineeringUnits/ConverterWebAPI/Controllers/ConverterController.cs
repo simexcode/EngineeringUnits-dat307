@@ -19,8 +19,8 @@ namespace ConverterWebAPI.Controllers {
 
         public class ConversionResult {
             public double data { get; set; }
+            public string annotation { get; set; }
             public string unit { get; set; }
-            public string name { get; set; }
         }
 
         public class ConerterInput {
@@ -33,7 +33,7 @@ namespace ConverterWebAPI.Controllers {
         public ConversionResult Convert(ConerterInput input) {
             Unit endUnit;
             var res = converter.Convert(input.data, input.from, input.to, out endUnit);
-            return new ConversionResult { data = res.Item1, unit = res.Item2, name = endUnit.Name };
+            return new ConversionResult { data = res.Item1, annotation = endUnit.Name, unit = res.Item2 };
         }
     }
 }
