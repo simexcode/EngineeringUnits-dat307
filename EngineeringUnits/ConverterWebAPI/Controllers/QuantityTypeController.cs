@@ -18,40 +18,27 @@ namespace ConverterWebAPI.Controllers {
             this.converter = new Converter();
         }
 
-        public class ConversionResult {
-            public double data { get; set; }
-            public string unit { get; set; }
-        }
-
-        public class ConverterInput {
-            [Required] public string quantity { get; set; }
+        public class Input {
+            [Required] public string dimension { get; set; }
         }
 
         [HttpGet]
         public string Start() {
             List<string> list = new List<string>();
             var File = converter.GetQuantityTypes();
-
             for (int i = 0; i < File.Count; i++){
                 List<string> list2 = new List<string>();
                 var unit = converter.GetUnitsInQuantity(File[i].Name);
-                
-
-                // list.Add(File[i].Name+" : "+JsonSerializer.Serialize(unit[i].symbol) );
-                // list.Add(File[i].Name+" : "+unit[j].symbol);
-
                  for (int j = 0; j < unit.Count; j++){
                      list.Add(File[i].Name+" : "+unit[j].symbol);
                  }
-                // JsonSerializer.Serialize(unit);
-
             }
             return JsonSerializer.Serialize(list);
         }
 
         [HttpPost]
-        public string Post(ConverterInput input) {
-            var res = converter.GetUnitsInQuantity(input.quantity);
+        public string Post(Input input) {
+            var res = converter.GetUnitsInQuantity(input.dimension);
             List<string> list = new List<string>();
             for (int i = 0; i < res.Count; i++){
                 list.Add(res[i].symbol);
