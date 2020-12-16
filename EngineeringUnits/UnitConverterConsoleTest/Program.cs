@@ -15,8 +15,9 @@ namespace UnitConverterConsoleTest {
             Console.ReadKey();
             Converter converter = new Converter();
             try {
-                var result = converter.Convert(983, "cm", "m");
-                Console.WriteLine("GOT: " + result.Item1 + " " + result.Item2);
+                Unit endUnit;
+                var result = converter.Convert(983, "cm", "m", out endUnit);
+                Console.WriteLine("GOT: " + result.Item1 + " " + result.Item2 + " " + endUnit.Name);
                 result = converter.Convert(983, "degC", "K");
                 Console.WriteLine("GOT: " + result.Item1 + " " + result.Item2);
                 result = converter.Convert(983, "kg", "t");

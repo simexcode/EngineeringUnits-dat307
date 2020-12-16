@@ -54,9 +54,11 @@ namespace UnitConverter {
             return filtered;
         }
 
-        public (double, string) Convert(double d, String f, String t) {
+
+        public (double, string) Convert(double d, String f, String t, out Unit endUnit) {
             Unit from = LoadUnit(f).FirstOrDefault(n => { return n.UnitName == f || n.Name.ToLower() == f.ToLower() || n.symbol == f; });
             Unit to = LoadUnit(t).FirstOrDefault(n => { return n.UnitName == t || n.Name.ToLower() == t.ToLower() || n.symbol == t; });
+            endUnit = to;
 
             if (from == null)
                 throw new KeyNotFoundException("No unit of type '" + f + "' was found");
@@ -70,7 +72,12 @@ namespace UnitConverter {
             return Convert(d, from, to);
         }
 
-        private (double, string) Convert(double d, Unit f, Unit t) {
+        public (double, string) Convert(double d, String f, String t) {
+            Unit temp;
+            return Convert(d, f, t, out temp);
+        }
+
+        public (double, string) Convert(double d, Unit f, Unit t) {
             var temp = f.ToBase(d);
             return (t.FromBase(temp), t.symbol);
         }
