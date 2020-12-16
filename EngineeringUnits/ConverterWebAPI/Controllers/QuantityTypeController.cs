@@ -28,40 +28,22 @@ namespace ConverterWebAPI.Controllers {
         }
 
         [HttpGet]
-        public string Start() {
-            List<Jsonn> list = new List<Jsonn>();
+        public string Starte()
+        {
             var File = converter.GetQuantityTypes();
+            var dict = new Dictionary<string, List<string>>();
             for (int i = 0; i < File.Count; i++){
                 var unit = converter.GetUnitsInQuantity(File[i].Name);
-
-                 for (int j = 0; j < unit.Count; j++){
-                    var jsonn = new Jsonn
-                    {
-                        desciptions = File[i].Name,
-                        dimension = unit[j].symbol
-                    };
-                    list.Add(jsonn);
-                 }
-
-                
-
-                // list.Add(File[i].descriptors[0] + " : " + File[i].dimension);
+                for (int j = 0; j < unit.Count; j++)
+                {
+                    if (!dict.ContainsKey(File[i].Name))
+                        dict.Add(File[i].Name, new List<string>());
+                    dict[File[i].Name].Add(unit[j].symbol);
+                }
             }
-            return JsonSerializer.Serialize(list);
+            return JsonSerializer.Serialize(dict);
         }
 
-        // public string Start() {
-            // List<string> list = new List<string>();
-            // var File = converter.GetQuantityTypes();
-            // for (int i = 0; i < File.Count; i++){
-                // List<string> list2 = new List<string>();
-                // var unit = converter.GetUnitsInQuantity(File[i].Name);
-                //  for (int j = 0; j < unit.Count; j++){
-                //      list.Add(File[i].Name+" : "+unit[j].symbol);
-                //  }
-            // }
-            // return JsonSerializer.Serialize(list);
-        // }
 
         [HttpPost]
         public string Post(Input input) {
