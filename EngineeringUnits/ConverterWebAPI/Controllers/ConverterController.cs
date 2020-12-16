@@ -20,6 +20,7 @@ namespace ConverterWebAPI.Controllers {
         public class ConversionResult {
             public double data { get; set; }
             public string unit { get; set; }
+            // public string annotation { get; set; }
         }
 
         public class ConerterInput {
@@ -31,7 +32,9 @@ namespace ConverterWebAPI.Controllers {
         [HttpPost]
         public ConversionResult Convert(ConerterInput input) {
             var res = converter.Convert(input.data, input.from, input.to);
-            return new ConversionResult { data = res.Item1, unit = res.Item2 };
+            return new ConversionResult { data = res.Item1, unit = res.Item2
+            //, annotation = res.Item3 
+            };
         }
     }
 }
