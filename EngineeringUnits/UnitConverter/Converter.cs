@@ -86,7 +86,9 @@ namespace UnitConverter {
             return reader.GetDimensions();
         }
 
-        public List<QuantityType> GetQuantityTypes() { return reader.GetQuantityTypes(); }
+        public List<QuantityType> GetQuantityTypes() { 
+            return reader.GetQuantityTypes(); 
+        }
 
         public List<Unit> GetUnitsInDimension(string dimension) {
             var classes = reader.GetDimensions();
@@ -94,7 +96,9 @@ namespace UnitConverter {
             return GetUnitsInDimension(dim);
         }
 
-        public List<Unit> GetUnitsInDimension(Dimension dimension) {return reader.GetUnitsInDimmention(dimension); }
+        public List<Unit> GetUnitsInDimension(Dimension dimension) {
+            return reader.GetUnitsInDimmention(dimension); 
+        }
 
         public List<Unit> GetUnitsInQuantity(string quantity) {
             var classes = reader.GetQuantityTypes();
@@ -102,6 +106,8 @@ namespace UnitConverter {
             return GetUnitsInQuantity(dim);
         }
 
-        public List<Unit> GetUnitsInQuantity(QuantityType quantityType) { return reader.GetUnitsInQuantity(quantityType); }
+        public List<Unit> GetUnitsInQuantity(QuantityType quantityType) { 
+            return reader.GetUnitsInQuantity(quantityType); 
+        }
     }
 }

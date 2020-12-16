@@ -23,10 +23,8 @@ namespace ConverterWebAPI.Controllers {
             public string unit { get; set; }
         }
 
-        public class ConerterInput {
-            [Required] public double data { get; set; }
-            [Required] public string from { get; set; }
-            [Required] public string to { get; set; }
+        public class ConverterInput {
+            [Required] public string quantity { get; set; }
         }
 
         [HttpGet]
@@ -34,21 +32,31 @@ namespace ConverterWebAPI.Controllers {
             List<string> list = new List<string>();
             var File = converter.GetQuantityTypes();
 
-            for (int i = 0; i < File.Count; i++)
-            {
-                // for (int j = 0; j < File[i].Name.Length; j++)
-                // {
-                    // list.Add(File[i].descriptors[j]);
-                    System.Console.WriteLine(File[i].Name);
-                // }
+            for (int i = 0; i < File.Count; i++){
+                List<string> list2 = new List<string>();
+                var unit = converter.GetUnitsInQuantity(File[i].Name);
+                
+
+                // list.Add(File[i].Name+" : "+JsonSerializer.Serialize(unit[i].symbol) );
+                // list.Add(File[i].Name+" : "+unit[j].symbol);
+
+                 for (int j = 0; j < unit.Count; j++){
+                     list.Add(File[i].Name+" : "+unit[j].symbol);
+                 }
+                // JsonSerializer.Serialize(unit);
+
             }
             return JsonSerializer.Serialize(list);
         }
 
         [HttpPost]
-        public ConversionResult Convert(ConerterInput input) {
-            var res = converter.Convert(input.data, input.from, input.to);
-            return new ConversionResult { data = res.Item1, unit = res.Item2 };
+        public string Post(ConverterInput input) {
+            var res = converter.GetUnitsInQuantity(input.quantity);
+            List<string> list = new List<string>();
+            for (int i = 0; i < res.Count; i++){
+                list.Add(res[i].symbol);
+            }
+            return JsonSerializer.Serialize(list);
         }
     }
 }

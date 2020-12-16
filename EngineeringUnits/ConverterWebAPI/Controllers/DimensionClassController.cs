@@ -18,45 +18,39 @@ namespace ConverterWebAPI.Controllers {
             this.converter = new Converter();
         }
 
-        public class DimensionsOutput {
-            public List<Dimension> dimensions;
-        }
+        // public class DimensionsOutput {
+        //     public List<Dimension> dimensions;
+        // }
 
         public class ConverterInput {
-            [Required] public string from { get; set; }
+            [Required] public string quantity { get; set; }
         }
 
-        public class ConversionResult {
-            public double data { get; set; }
-            public string unit { get; set; }
-        }
-
-        public class ConerterInput {
-            [Required] public double data { get; set; }
-            [Required] public string from { get; set; }
-            [Required] public string to { get; set; }
-        }
+        // public class ConversionResult {
+        //     public double data { get; set; }
+        //     public string unit { get; set; }
+        // }
 
         [HttpGet]
         public string Start() {
             List<string> list = new List<string>();
             var File = converter.GetDimensionClasses();
-            for (int i = 0; i < File.Count; i++)
-            {
-                for (int j = 0; j < File[i].descriptors.Length; j++)
-                {
-                    list.Add(File[i].descriptors[j]);
-                    System.Console.WriteLine(File[i].descriptors[j]);
-                }
+
+            for (int i = 0; i < File.Count; i++){
+                list.Add(File[i].descriptors[0]+" : "+File[i].dimension);
             }
+            
             return JsonSerializer.Serialize(list);
         }
 
         [HttpPost]
-        public List<Unit> reply(string input) {
-            var res = converter.GetUnitsInDimension("length");
-            return res;
+        public string Post(ConverterInput input) {
+            var res = converter.GetUnitsInDimension(input.quantity);
+            List<string> list = new List<string>();
+            for (int i = 0; i < res.Count; i++){
+                list.Add(res[i].Name);
+            }
+            return JsonSerializer.Serialize(list);
         }
-
     }
 }
