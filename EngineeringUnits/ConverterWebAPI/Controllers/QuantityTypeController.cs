@@ -22,11 +22,6 @@ namespace ConverterWebAPI.Controllers {
             [Required] public string dimension { get; set; }
         }
 
-        public class Jsonn { 
-            public string desciptions { get; set; }
-            public string dimension { get; set; }
-        }
-
         [HttpGet]
         public string Starte()
         {
@@ -43,7 +38,6 @@ namespace ConverterWebAPI.Controllers {
             }
             return JsonSerializer.Serialize(dict);
         }
-
 
         [HttpPost]
         public string Post(Input input) {
